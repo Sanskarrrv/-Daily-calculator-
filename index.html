@@ -1,135 +1,93 @@
-DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bhaiya Digital Register</title>
-    <style>
-        /* Phone ke liye design */
-        body {
-            font-family: sans-serif;
-            background-color: #f4f7f6;
-            margin: 0;
-            padding: 10px;
-        }
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        h2 { text-align: center; margin-top: 0; color: #333; }
-        .date { text-align: center; color: #777; font-size: 0.9em; margin-bottom: 15px; }
+class ShopTracker:
+    def __init__(self):
+        # Lists to store the history of transactions
+        self.sales = []
+        self.expenses = []
 
-        /* Upar ka Dashboard (Hisab Box) */
-        .dashboard {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            text-align: center;
-            background: #eee;
-            border-radius: 8px;
-            padding: 10px;
-        }
-        .box { flex: 1; }
-        .box h3 { margin: 0; font-size: 0.8em; color: #555; }
-        .box p { margin: 5px 0 0; font-size: 1.1em; font-weight: bold; }
+    def add_sale(self, item_name, amount):
+        """Records a sale."""
+        try:
+            amount = float(amount)
+            if amount < 0:
+                print("Error: Amount cannot be negative.")
+                return
+            self.sales.append({"item": item_name, "amount": amount})
+            print(f"✅ Sale recorded: {item_name} for ${amount:.2f}")
+        except ValueError:
+            print("❌ Error: Please enter a valid number for the amount.")
+
+    def add_expense(self, description, amount):
+        """Records an expense (rent, stock, bills)."""
+        try:
+            amount = float(amount)
+            if amount < 0:
+                print("Error: Amount cannot be negative.")
+                return
+            self.expenses.append({"description": description, "amount": amount})
+            print(f"📉 Expense recorded: {description} for ${amount:.2f}")
+        except ValueError:
+            print("❌ Error: Please enter a valid number for the amount.")
+
+    def show_report(self):
+        """Calculates and prints the financial summary."""
+        total_sales = sum(item['amount'] for item in self.sales)
+        total_expenses = sum(item['amount'] for item in self.expenses)
+        net_profit = total_sales - total_expenses
+
+        print("\n" + "="*30)
+        print("     FINANCIAL REPORT     ")
+        print("="*30)
+        print(f"Total Revenue (Sales):  ${total_sales:.2f}")
+        print(f"Total Expenses:         ${total_expenses:.2f}")
+        print("-" * 30)
         
-        .green { color: #27ae60; } /* Hara Rang */
-        .red { color: #c0392b; }   /* Laal Rang */
-        .blue { color: #2980b9; }  /* Neela Rang */
+        if net_profit >= 0:
+            print(f"NET PROFIT:             ${net_profit:.2f}")
+        else:
+            print(f"NET LOSS:               ${abs(net_profit):.2f}")
+        print("="*30 + "\n")
 
-        /* Bada Total Box */
-        .main-balance {
-            text-align: center;
-            background: #2c3e50;
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .main-balance span { font-size: 2em; font-weight: bold; }
-        .main-balance div { font-size: 0.9em; opacity: 0.8; }
+    def show_history(self):
+        """Shows detailed list of all transactions."""
+        print("\n--- Sales History ---")
+        for s in self.sales:
+            print(f" + {s['item']}: ${s['amount']:.2f}")
+            
+        print("\n--- Expense History ---")
+        for e in self.expenses:
+            print(f" - {e['description']}: ${e['amount']:.2f}")
+        print("")
 
-        /* Entry Form */
-        input, select {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-            font-size: 16px;
-        }
+# --- Main Program Loop ---
+def main():
+    tracker = ShopTracker()
+    
+    while True:
+        print("1. Add Sale")
+        print("2. Add Expense")
+        print("3. View Financial Report")
+        print("4. View Transaction History")
+        print("5. Exit")
         
-        /* Income/Expense Buttons */
-        .btn-group { display: flex; gap: 10px; margin-bottom: 10px; }
-        .btn-option {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            opacity: 0.6;
-        }
-        .btn-option.active { opacity: 1; transform: scale(1.02); }
-        .income-btn { background-color: #2ecc71; color: white; }
-        .expense-btn { background-color: #e74c3c; color: white; }
+        choice = input("\nSelect an option (1-5): ")
 
-        .submit-btn {
-            width: 100%;
-            padding: 12px;
-            background-color: #333;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.1em;
-            margin-top: 5px;
-        }
+        if choice == '1':
+            item = input("Enter item name: ")
+            price = input("Enter sale amount: ")
+            tracker.add_sale(item, price)
+        elif choice == '2':
+            desc = input("Enter expense description (e.g., Rent, Stock): ")
+            cost = input("Enter expense cost: ")
+            tracker.add_expense(desc, cost)
+        elif choice == '3':
+            tracker.show_report()
+        elif choice == '4':
+            tracker.show_history()
+        elif choice == '5':
+            print("Exiting program. Goodbye!")
+            break
+        else:
+            print("Invalid choice, please try again.")
 
-        /* List (Niche ka hisab) */
-        ul { list-style: none; padding: 0; margin-top: 20px; }
-        li {
-            background: #fff;
-            border-bottom: 1px solid #eee;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        li.inc { border-left: 5px solid #2ecc71; }
-        li.exp { border-left: 5px solid #e74c3c; }
-        
-        .del-btn {
-            background: none; border: none; color: #999; font-size: 1.2em; margin-left: 10px;
-        }
-
-        .download-btn {
-            width: 100%; padding: 10px; background: #2980b9; color: white; border: none; margin-top: 20px; border-radius: 5px;
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h2>Dukan Daily Register</h2>
-    <div class="date" id="todayDate"></div>
-
-
-        
-        const link = document.createElement("a");
-        link.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
-        link.download = "Dukan_Hisab_" + new Date().toLocaleDateString() + ".csv";
-        document.body.appendChild(link);
-        link.click();
-    }
-
-    // Start
-    updateUI();
-</script>
-
-</body>
-</html>
+if __name__ == "__main__":
+    main()
