@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhaiya Digital Register</title>
+    <style>
+        /* Phone ke liye design */
+        body {
+            font-family: sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 10px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h2 { text-align: center; margin-top: 0; color: #333; }
+        .date { text-align: center; color: #777; font-size: 0.9em; margin-bottom: 15px; }
+
+        /* Upar ka Dashboard (Hisab Box) */
+        .dashboard {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            text-align: center;
+            background: #eee;
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .box { flex: 1; }
+        .box h3 { margin: 0; font-size: 0.8em; color: #555; }
+        .box p { margin: 5px 0 0; font-size: 1.1em; font-weight: bold; }
+        
+        .green { color: #27ae60; } /* Hara Rang */
+        .red { color: #c0392b; }   /* Laal Rang */
+        .blue { color: #2980b9; }  /* Neela Rang */
+
+        /* Bada Total Box */
+        .main-balance {
+            text-align: center;
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .main-balance span { font-size: 2em; font-weight: bold; }
+        .main-balance div { font-size: 0.9em; opacity: 0.8; }
+
+        /* Entry Form */
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        
+        /* Income/Expense Buttons */
+        .btn-group { display: flex; gap: 10px; margin-bottom: 10px; }
+        .btn-option {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            opacity: 0.6;
+        }
+        .btn-option.active { opacity: 1; transform: scale(1.02); }
+        .income-btn { background-color: #2ecc71; color: white; }
+        .expense-btn { background-color: #e74c3c; color: white; }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            margin-top: 5px;
+        }
+
+        /* List (Niche ka hisab) */
+        ul { list-style: none; padding: 0; margin-top: 20px; }
+        li {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        li.inc { border-left: 5px solid #2ecc71; }
+        li.exp { border-left: 5px solid #e74c3c; }
+        
+        .del-btn {
+            background: none; border: none; color: #999; font-size: 1.2em; margin-left: 10px;
+        }
+
+        .download-btn {
+            width: 100%; padding: 10px; background: #2980b9; color: white; border: none; margin-top: 20px; border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Dukan Daily Register</h2>
+    <div class="date" id="todayDate"></div>
+
+    <div class="main-balance">
+        <div>Aaj ka Galla (Cash)</div>
+        <span id="cashInHand">₹0</span>
+    </div>
+
+    <div class="dashboard">
+        <div class="box">
+            <h3>Aamdani (+)</h3>
+            <p class="green" id="totalIn">₹0</p>
+        </div>
+        <div class="box">
+            <h3>Kharcha (-)</h3>
+            <p class="red" id="totalOut">₹0</p>
+        </div>
+    </div>
+
+    <div style="background:#f9f9f9; padding:10px; border-radius:8px;">
+        <input type="number" id="amount" placeholder="Kitne Rupaye? (e.g. 100)">
+        <input type="text" id="desc" placeholder="Kis cheez ke? (e.g. Xerox, Chai)">
+        
+        <div class="btn-group">
+            <button class="btn-option income-btn active" id="btnIncome" onclick="setType('income')">Aamdani (Income)</button>
+            <button class="btn-option expense-btn" id="btnExpense" onclick="setType('expense')">Kharcha (Expense)</button>
+        </div>
+
+        <button class="submit-btn" onclick="addEntry()">Entry Save Karein</button>
+    </div>
+
+    <h3>Aaj ki Entries</h3>
+    <ul id="list">
+        </ul>
+
+    <button class="download-btn" onclick="downloadExcel()">📥 Download Daily Report</button>
+</div>
+
+<script>
+    // Variables
+    let currentType = 'income';
+    let transactions = JSON.parse(localStorage.getItem('dukanHisab')) || [];
+    
+    // UI Elements
+    const amountInput = document.getElementById('amount');
+    const descInput = document.getElementById('desc');
+    const btnIncome = document.getElementById('btnIncome');
+    const btnExpense = document.getElementById('btnExpense');
+    const list = document.getElementById('list');
+    const cashDisplay = document.getElementById('cashInHand');
+    const inDisplay = document.getElementById('totalIn');
+    const outDisplay = document.getElementById('totalOut');
+
+    // Date Set Karna
+    document.getElementById('todayDate').innerText = new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+    // Button Toggle Function
+    function setType(type) {
+        currentType = type;
+        if(type === 'income') {
+            btnIncome.classList.add('active');
+            btnIncome.style.opacity = "1";
+            btnExpense.classList.remove('active');
+            btnExpense.style.opacity = "0.5";
+        } else {
+            btnExpense.classList.add('active');
+            btnExpense.style.opacity = "1";
+            btnIncome.classList.remove('active');
+            btnIncome.style.opacity = "0.5";
+        }
+    }
+
+    // Nayi Entry Add Karna
+    function addEntry() {
+        if(amountInput.value === '') {
+            alert("Bhaiya, amount toh likhiye!");
+            return;
+        }
+
+        const transaction = {
+            id: Date.now(),
+            desc: descInput.value || (currentType === 'income' ? 'Sale' : 'Expense'), // Agar kuch na likha ho
+            amount: +amountInput.value,
+            type: currentType,
+            time: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+        };
+
+        transactions.push(transaction);
+        saveData();
+        updateUI();
+
+        // Clear Form
+        amountInput.value = '';
+        descInput.value = '';
+        amountInput.focus();
+    }
+
+    // Delete Function
+    function removeEntry(id) {
+        if(confirm("Ye hisab delete kar doon?")) {
+            transactions = transactions.filter(t => t.id !== id);
+            saveData();
+            updateUI();
+        }
+    }
+
+    // Screen Update Karna
+    function updateUI() {
+        list.innerHTML = '';
+        let totalInc = 0;
+        let totalExp = 0;
+
+        // Ulti loop taaki nayi entry upar dikhe
+        transactions.slice().reverse().forEach(t => {
+            if(t.type === 'income') totalInc += t.amount;
+            else totalExp += t.amount;
+
+            const li = document.createElement('li');
+            li.classList.add(t.type === 'income' ? 'inc' : 'exp');
+            li.innerHTML = `
+                <div>
+                    <strong>${t.desc}</strong> <br>
+                    <small style="color:gray">${t.time}</small>
+                </div>
+                <div style="display:flex; align-items:center;">
+                    <span style="font-weight:bold; color:${t.type === 'income' ? '#27ae60' : '#c0392b'}">
+                        ${t.type === 'income' ? '+' : '-'}₹${t.amount}
+                    </span>
+                    <button class="del-btn" onclick="removeEntry(${t.id})">×</button>
+                </div>
+            `;
+            list.appendChild(li);
+        });
+
+        // Totals Update
+        inDisplay.innerText = `₹${totalInc}`;
+        outDisplay.innerText = `₹${totalExp}`;
+        cashDisplay.innerText = `₹${totalInc - totalExp}`;
+    }
+
+    // Save to LocalStorage
+    function saveData() {
+        localStorage.setItem('dukanHisab', JSON.stringify(transactions));
+    }
+    
+    // Excel Download
+    function downloadExcel() {
+        let csv = "Time,Vivaran,Amount,Type\n";
+        transactions.forEach(t => {
+            csv += `${t.time},${t.desc},${t.amount},${t.type}\n`;
+        });
+        
+        const link = document.createElement("a");
+        link.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
+        link.download = "Dukan_Hisab_" + new Date().toLocaleDateString() + ".csv";
+        document.body.appendChild(link);
+        link.click();
+    }
+
+    // Start
+    updateUI();
+</script>
+
+</body>
+</html>
