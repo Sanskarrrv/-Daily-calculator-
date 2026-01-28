@@ -1,90 +1,222 @@
-class ShopTracker:
-    def __init__(self):
-        # Lists to store the history of transactions
-        self.sales = []
-        self.expenses = []
-
-    def add_sale(self, item_name, amount):
-        """Records a sale."""
-        try:
-            amount = float(amount)
-            if amount < 0:
-                print("Error: Amount cannot be negative.")
-                return
-            self.sales.append({"item": item_name, "amount": amount})
-            print(f"✅ Sale recorded: {item_name} for ${amount:.2f}")
-        except ValueError:
-            print("❌ Error: Please enter a valid number for the amount.")
-
-    def add_expense(self, description, amount):
-        """Records an expense (rent, stock, bills)."""
-        try:
-            amount = float(amount)
-            if amount < 0:
-                print("Error: Amount cannot be negative.")
-                return
-            self.expenses.append({"description": description, "amount": amount})
-            print(f"📉 Expense recorded: {description} for ${amount:.2f}")
-        except ValueError:
-            print("❌ Error: Please enter a valid number for the amount.")
-
-    def show_report(self):
-        """Calculates and prints the financial summary."""
-        total_sales = sum(item['amount'] for item in self.sales)
-        total_expenses = sum(item['amount'] for item in self.expenses)
-        net_profit = total_sales - total_expenses
-
-        print("\n" + "="*30)
-        print("     FINANCIAL REPORT     ")
-        print("="*30)
-        print(f"Total Revenue (Sales):  ${total_sales:.2f}")
-        print(f"Total Expenses:         ${total_expenses:.2f}")
-        print("-" * 30)
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Manager - दुकान का हिसाब</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        h2 { text-align: center; color: #333; }
+        .balance-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            background: #fff;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .money { font-weight: bold; }
+        .plus { color: #2ecc71; }
+        .minus { color: #c0392b; }
         
-        if net_profit >= 0:
-            print(f"NET PROFIT:             ${net_profit:.2f}")
-        else:
-            print(f"NET LOSS:               ${abs(net_profit):.2f}")
-        print("="*30 + "\n")
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .btn-add { background-color: #2ecc71; } /* Green for Sales */
+        .btn-exp { background-color: #e74c3c; } /* Red for Expense */
+        
+        ul { list-style-type: none; padding: 0; }
+        li {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+        }
+        li.plus { border-right: 5px solid #2ecc71; }
+        li.minus { border-right: 5px solid #c0392b; }
+        
+        .total-profit {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .delete-btn {
+            background-color: transparent;
+            color: #999;
+            font-size: 12px;
+            border: none;
+            width: auto;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
 
-    def show_history(self):
-        """Shows detailed list of all transactions."""
-        print("\n--- Sales History ---")
-        for s in self.sales:
-            print(f" + {s['item']}: ${s['amount']:.2f}")
-            
-        print("\n--- Expense History ---")
-        for e in self.expenses:
-            print(f" - {e['description']}: ${e['amount']:.2f}")
-        print("")
+<div class="container">
+    <h2>दुकान का हिसाब (Shop Tracker)</h2>
 
-# --- Main Program Loop ---
-def main():
-    tracker = ShopTracker()
+    <div class="total-profit">
+        नेट प्रॉफिट (Net Profit): <span id="balance">₹0.00</span>
+    </div>
+
+    <div class="balance-container">
+        <div>
+            <h4>कमाई (Sales)</h4>
+            <p id="money-plus" class="money plus">+₹0.00</p>
+        </div>
+        <div>
+            <h4>खर्चा (Expense)</h4>
+            <p id="money-minus" class="money minus">-₹0.00</p>
+        </div>
+    </div>
+
+    <h3>नया जोड़े (Add New)</h3>
+    <input type="text" id="text" placeholder="आइटम का नाम (जैसे: नोटबुक)">
+    <input type="number" id="amount" placeholder="रुपये (Amount)">
     
-    while True:
-        print("1. Add Sale")
-        print("2. Add Expense")
-        print("3. View Financial Report")
-        print("4. View Transaction History")
-        print("5. Exit")
-        
-        choice = input("\nSelect an option (1-5): ")
+    <div class="btn-group">
+        <button class="btn-add" onclick="addTransaction(true)">बिक्री (Sale)</button>
+        <button class="btn-exp" onclick="addTransaction(false)">खर्चा (Expense)</button>
+    </div>
 
-        if choice == '1':
-            item = input("Enter item name: ")
-            price = input("Enter sale amount: ")
-            tracker.add_sale(item, price)
-        elif choice == '2':
-            desc = input("Enter expense description (e.g., Rent, Stock): ")
-            cost = input("Enter expense cost: ")
-            tracker.add_expense(desc, cost)
-        elif choice == '3':
-            tracker.show_report()
-        elif choice == '4':
-            tracker.show_history()
-        elif choice == '5':
-            print("Exiting program. Goodbye!")
-            break
-        else:
-            print("
+    <h3>पुराना हिसाब (History)</h3>
+    <ul id="list" class="list">
+        </ul>
+    
+    <button onclick="clearData()" style="background:#555; margin-top:20px;">पूरा डाटा मिटाएं (Reset)</button>
+</div>
+
+<script>
+    const balanceEl = document.getElementById('balance');
+    const money_plus = document.getElementById('money-plus');
+    const money_minus = document.getElementById('money-minus');
+    const list = document.getElementById('list');
+    const text = document.getElementById('text');
+    const amount = document.getElementById('amount');
+
+    // पुराना डाटा लोड करें (ताकि रिफ्रेश करने पर उड़े नहीं)
+    let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+
+    function addTransaction(isSale) {
+        if (text.value.trim() === '' || amount.value.trim() === '') {
+            alert('कृपया नाम और रक़म दोनों लिखें');
+            return;
+        }
+
+        const transaction = {
+            id: generateID(),
+            text: text.value,
+            amount: isSale ? +amount.value : -amount.value
+        };
+
+        transactions.push(transaction);
+        addTransactionDOM(transaction);
+        updateValues();
+        updateLocalStorage();
+
+        text.value = '';
+        amount.value = '';
+    }
+
+    function generateID() {
+        return Math.floor(Math.random() * 100000000);
+    }
+
+    function addTransactionDOM(transaction) {
+        const sign = transaction.amount < 0 ? '-' : '+';
+        const item = document.createElement('li');
+
+        item.classList.add(transaction.amount < 0 ? 'minus' : 'plus');
+        item.innerHTML = `
+            ${transaction.text} <span>${sign}₹${Math.abs(transaction.amount)}</span>
+            <button class="delete-btn" onclick="removeTransaction(${transaction.id})">x</button>
+        `;
+
+        list.appendChild(item);
+    }
+
+    function updateValues() {
+        const amounts = transactions.map(transaction => transaction.amount);
+        const total = amounts.reduce((acc, item) => (acc += item), 0).toFixed(2);
+        
+        const income = amounts
+            .filter(item => item > 0)
+            .reduce((acc, item) => (acc += item), 0)
+            .toFixed(2);
+
+        const expense = (amounts
+            .filter(item => item < 0)
+            .reduce((acc, item) => (acc += item), 0) * -1)
+            .toFixed(2);
+
+        balanceEl.innerText = `₹${total}`;
+        money_plus.innerText = `+₹${income}`;
+        money_minus.innerText = `-₹${expense}`;
+    }
+
+    function removeTransaction(id) {
+        transactions = transactions.filter(transaction => transaction.id !== id);
+        updateLocalStorage();
+        init();
+    }
+
+    function updateLocalStorage() {
+        localStorage.setItem('transactions', JSON.stringify(transactions));
+    }
+    
+    function clearData() {
+        if(confirm("क्या आप सच में सारा पुराना हिसाब मिटाना चाहते हैं?")) {
+            localStorage.clear();
+            transactions = [];
+            init();
+        }
+    }
+
+    function init() {
+        list.innerHTML = '';
+        transactions.forEach(addTransactionDOM);
+        updateValues();
+    }
+
+    init();
+</script>
+
+</body>
+</html>
