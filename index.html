@@ -1,301 +1,349 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Budget Tracker</title>
+    <title>Daily Shop Hisab-Kitab</title>
     <style>
-        /* General Styles & Animation */
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #f0f2f5; 
-            margin: 0; 
-            padding: 20px; 
-            display: flex; 
-            justify-content: center; 
+        :root {
+            --primary: #2563eb;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --bg: #f3f4f6;
+            --card: #ffffff;
         }
 
-        .container { 
-            background: white; 
-            width: 100%; 
-            max-width: 450px; 
-            padding: 25px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-            animation: fadeIn 0.8s ease-in-out;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+        body {
+            background-color: var(--bg);
+            padding: 20px;
         }
 
-        h2 { text-align: center; color: #333; margin-bottom: 20px; }
-
-        /* Balance Dashboard */
-        .dashboard { display: flex; justify-content: space-between; margin-bottom: 20px; text-align: center; }
-        .card { flex: 1; padding: 10px; margin: 0 5px; border-radius: 8px; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .card-income { background-color: #2ecc71; }
-        .card-expense { background-color: #e74c3c; }
-        .card-balance { background-color: #3498db; }
-        .card h4 { margin: 0; font-size: 12px; opacity: 0.9; text-transform: uppercase; }
-        .card p { margin: 5px 0 0; font-size: 18px; font-weight: bold; }
-
-        /* Inputs */
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 14px; color: #555; }
-        input, select { 
-            width: 100%; 
-            padding: 10px; 
-            border: 1px solid #ddd; 
-            border-radius: 6px; 
-            font-size: 14px; 
-            box-sizing: border-box; 
-            transition: border 0.3s;
-        }
-        input:focus, select:focus { border-color: #3498db; outline: none; }
-
-        /* Buttons */
-        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
-        button { 
-            flex: 1; 
-            padding: 12px; 
-            border: none; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            transition: transform 0.1s, box-shadow 0.2s; 
-        }
-        .add-btn { background-color: #333; color: white; }
-        .add-btn:hover { background-color: #000; }
-        .add-btn:active { transform: scale(0.98); }
-
-        .excel-btn { background-color: #27ae60; color: white; }
-        .excel-btn:hover { background-color: #219150; }
-
-        /* List with Slide Animation */
-        ul { list-style: none; padding: 0; margin-top: 25px; }
-        li { 
-            background: #fff; 
-            border-bottom: 1px solid #eee; 
-            padding: 12px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            animation: slideIn 0.4s ease-out forwards;
-            position: relative;
-        }
-        li:hover { background-color: #fafafa; }
-        
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: var(--card);
+            border-radius: 15px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
 
-        li.plus { border-right: 5px solid #2ecc71; }
-        li.minus { border-right: 5px solid #e74c3c; }
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
 
-        .delete-btn {
-            background-color: #e74c3c;
+        .balance-card {
+            background: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .balance-amount {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .summary {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            gap: 10px;
+        }
+
+        .summary-box {
+            flex: 1;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .income-box { background-color: #dcfce7; color: var(--success); }
+        .expense-box { background-color: #fee2e2; color: var(--danger); }
+
+        .form-container {
+            padding: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
             color: white;
             border: none;
-            padding: 5px 10px;
-            font-size: 12px;
-            border-radius: 4px;
-            margin-left: 10px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
-            opacity: 0.7;
+            transition: background 0.3s;
+            margin-bottom: 10px;
         }
-        .delete-btn:hover { opacity: 1; }
 
-        .transaction-info { display: flex; flex-direction: column; }
-        .transaction-date { font-size: 11px; color: #888; margin-bottom: 2px; }
+        button:hover { background-color: #1d4ed8; }
+
+        .backup-section {
+            padding: 20px;
+            background: #e0f2fe;
+            border-top: 1px solid #bae6fd;
+            text-align: center;
+        }
+
+        .btn-download { background-color: #0891b2; }
+        .btn-upload { background-color: #4f46e5; }
+        
+        #fileInput { display: none; }
+
+        .history {
+            padding: 20px;
+        }
+
+        .transaction-list {
+            list-style: none;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f9fafb;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 5px solid transparent;
+        }
+
+        .transaction-item.income { border-left-color: var(--success); }
+        .transaction-item.expense { border-left-color: var(--danger); }
+
+        .delete-btn {
+            background-color: #ef4444;
+            padding: 5px 10px;
+            margin-left: 10px;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>💰 My Budget Tracker</h2>
+    <div class="header">
+        <h2>दुकान का हिसाब (सुरक्षित)</h2>
+    </div>
 
-    <div class="dashboard">
-        <div class="card card-income">
-            <h4>Income</h4>
+    <div class="balance-card">
+        <p>कुल बैलेंस (Total)</p>
+        <div class="balance-amount" id="balance">₹0.00</div>
+    </div>
+
+    <div class="summary">
+        <div class="summary-box income-box">
+            <h4>कमाई (Jama)</h4>
             <p id="money-plus">+₹0.00</p>
         </div>
-        <div class="card card-expense">
-            <h4>Expense</h4>
+        <div class="summary-box expense-box">
+            <h4>खर्च (Kharch)</h4>
             <p id="money-minus">-₹0.00</p>
         </div>
-        <div class="card card-balance">
-            <h4>Balance</h4>
-            <p id="balance">₹0.00</p>
+    </div>
+
+    <div class="form-container">
+        <h3>नया हिसाब जोड़ें</h3>
+        <br>
+        <div class="form-group">
+            <input type="text" id="text" placeholder="विवरण (जैसे: चाय, माल बिका...)" required>
         </div>
-    </div>
-
-    <div class="input-group">
-        <label>Date</label>
-        <input type="date" id="date">
-    </div>
-
-    <div class="input-group">
-        <label>Type & Category</label>
-        <div style="display: flex; gap: 10px;">
+        <div class="form-group">
+            <input type="number" id="amount" placeholder="राशि (Amount)" required>
+        </div>
+        <div class="form-group">
             <select id="type">
-                <option value="income">Income (Credit)</option>
-                <option value="expense">Expense (Debit)</option>
-            </select>
-            <select id="category">
-                <option value="Salary">Salary/Earning</option>
-                <option value="Food">Food</option>
-                <option value="Travel">Travel</option>
-                <option value="Bills">Bills & Recharge</option>
-                <option value="Shopping">Shopping</option>
-                <option value="Other">Other</option>
+                <option value="income">कमाई (Jama)</option>
+                <option value="expense">खर्च (Kharch)</option>
             </select>
         </div>
+        <button onclick="addTransaction()">ट्रांजैक्शन जोड़ें (+)</button>
     </div>
 
-    <div class="input-group">
-        <label>Description</label>
-        <input type="text" id="text" placeholder="e.g. Sold items, Pizza...">
+    <div class="backup-section">
+        <h3>डाटा बैकअप (Data Safety)</h3>
+        <p style="font-size: 12px; color: #555; margin-bottom: 10px;">डेटा खोने से बचने के लिए इसे रोज़ डाउनलोड करें</p>
+        <button class="btn-download" onclick="downloadData()">📥 आज का बैकअप डाउनलोड करें</button>
+        <button class="btn-upload" onclick="document.getElementById('fileInput').click()">📤 पुराना बैकअप वापस लाएं (Restore)</button>
+        <input type="file" id="fileInput" accept=".json" onchange="loadData(this)">
     </div>
-
-    <div class="input-group">
-        <label>Amount (₹)</label>
-        <input type="number" id="amount" placeholder="Enter amount...">
+    <div class="history">
+        <h3>पुराना हिसाब (History)</h3>
+        <ul id="list" class="transaction-list"></ul>
+        <button onclick="clearData()" style="background-color: #6b7280; margin-top: 10px;">सारा हिसाब मिटाएं (Reset)</button>
     </div>
-
-    <div class="btn-group">
-        <button class="add-btn" onclick="addTransaction()">Add Entry</button>
-        <button class="excel-btn" onclick="exportToExcel()">Save to Excel</button>
-    </div>
-
-    <h3>Transaction History</h3>
-    <ul id="list" class="list">
-        </ul>
 </div>
 
 <script>
-    // Variables to store data
-    let transactions = [];
+    const balance = document.getElementById('balance');
+    const money_plus = document.getElementById('money-plus');
+    const money_minus = document.getElementById('money-minus');
+    const list = document.getElementById('list');
+    const text = document.getElementById('text');
+    const amount = document.getElementById('amount');
+    const type = document.getElementById('type');
 
-    // Set default date to today
-    document.getElementById('date').valueAsDate = new Date();
+    let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 
     function addTransaction() {
-        const text = document.getElementById('text').value;
-        const amount = parseFloat(document.getElementById('amount').value);
-        const type = document.getElementById('type').value;
-        const date = document.getElementById('date').value;
-        const category = document.getElementById('category').value;
-
-        if (text.trim() === '' || isNaN(amount) || amount <= 0) {
-            alert('Please enter a valid description and amount');
+        if (text.value.trim() === '' || amount.value.trim() === '') {
+            alert('कृपया विवरण और राशि दोनों भरें');
             return;
         }
 
         const transaction = {
             id: generateID(),
-            text: text,
-            amount: type === 'income' ? amount : -amount, // Income is +, Expense is -
-            date: date,
-            category: category,
-            type: type
+            text: text.value,
+            amount: type.value === 'expense' ? -Math.abs(+amount.value) : Math.abs(+amount.value),
+            date: new Date().toLocaleDateString()
         };
 
         transactions.push(transaction);
-        addTransactionDOM(transaction);
-        updateValues();
+        updateLocalStorage();
+        init();
 
-        // Clear inputs
-        document.getElementById('text').value = '';
-        document.getElementById('amount').value = '';
+        text.value = '';
+        amount.value = '';
     }
 
-    // Generate random ID
     function generateID() {
         return Math.floor(Math.random() * 100000000);
     }
 
     function addTransactionDOM(transaction) {
-        const sign = transaction.type === 'income' ? '+' : '-';
-        const list = document.getElementById('list');
+        const sign = transaction.amount < 0 ? '-' : '+';
         const item = document.createElement('li');
 
-        item.classList.add(transaction.type === 'income' ? 'plus' : 'minus');
-        item.setAttribute('id', `item-${transaction.id}`);
+        item.classList.add('transaction-item');
+        item.classList.add(transaction.amount < 0 ? 'expense' : 'income');
 
         item.innerHTML = `
-            <div class="transaction-info">
-                <span class="transaction-date">${transaction.date} | ${transaction.category}</span>
-                <span>${transaction.text}</span>
+            <div>
+                <strong>${transaction.text}</strong> <br>
+                <small style="color: #666">${transaction.date || ''}</small>
             </div>
-            <div style="display:flex; align-items:center;">
-                <span>${sign}₹${Math.abs(transaction.amount)}</span>
-                <button class="delete-btn" onclick="removeTransaction(${transaction.id})">x</button>
-            </div>
+            <span>${sign}₹${Math.abs(transaction.amount)}</span>
+            <button class="delete-btn" onclick="removeTransaction(${transaction.id})">x</button>
         `;
 
-        list.prepend(item); // Add new item to the top
+        list.appendChild(item);
     }
 
     function updateValues() {
         const amounts = transactions.map(transaction => transaction.amount);
-
         const total = amounts.reduce((acc, item) => (acc += item), 0).toFixed(2);
+        const income = amounts.filter(item => item > 0).reduce((acc, item) => (acc += item), 0).toFixed(2);
+        const expense = (amounts.filter(item => item < 0).reduce((acc, item) => (acc += item), 0) * -1).toFixed(2);
 
-        const income = amounts
-            .filter(item => item > 0)
-            .reduce((acc, item) => (acc += item), 0)
-            .toFixed(2);
-
-        const expense = (
-            amounts.filter(item => item < 0).reduce((acc, item) => (acc += item), 0) * -1
-        ).toFixed(2);
-
-        document.getElementById('balance').innerText = `₹${total}`;
-        document.getElementById('money-plus').innerText = `+₹${income}`;
-        document.getElementById('money-minus').innerText = `-₹${expense}`;
+        balance.innerText = `₹${total}`;
+        money_plus.innerText = `+₹${income}`;
+        money_minus.innerText = `-₹${expense}`;
     }
 
     function removeTransaction(id) {
-        transactions = transactions.filter(transaction => transaction.id !== id);
+        if(confirm("क्या आप इसे हटाना चाहते हैं?")) {
+            transactions = transactions.filter(transaction => transaction.id !== id);
+            updateLocalStorage();
+            init();
+        }
+    }
+
+    function updateLocalStorage() {
+        localStorage.setItem('transactions', JSON.stringify(transactions));
+    }
+
+    // --- New Backup Functions ---
+
+    function downloadData() {
+        if(transactions.length === 0) {
+            alert("कोई डेटा नहीं है बैकअप लेने के लिए!");
+            return;
+        }
+        const dataStr = JSON.stringify(transactions);
+        const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
         
-        // Remove from UI
-        const item = document.getElementById(`item-${id}`);
-        if(item) item.remove();
+        const exportFileDefaultName = 'hisab-kitab-backup.json';
         
+        const linkElement = document.createElement('a');
+        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('download', exportFileDefaultName);
+        linkElement.click();
+    }
+
+    function loadData(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const loadedTransactions = JSON.parse(e.target.result);
+                if(Array.isArray(loadedTransactions)) {
+                    if(confirm("पुराना बैकअप लोड करने से अभी का डेटा बदल जाएगा। क्या आप जारी रखना चाहते हैं?")) {
+                        transactions = loadedTransactions;
+                        updateLocalStorage();
+                        init();
+                        alert("बैकअप सफलतापूर्वक लोड हो गया!");
+                    }
+                } else {
+                    alert("गलत फाइल! कृपया सही बैकअप फाइल चुनें।");
+                }
+            } catch(err) {
+                alert("फाइल पढ़ने में गलती हुई।");
+            }
+        };
+        reader.readAsText(file);
+        // Clear input so same file can be selected again if needed
+        input.value = '';
+    }
+
+    function clearData() {
+        if(confirm("चेतावनी: इससे सारा डेटा मिट जाएगा!")) {
+            transactions = [];
+            updateLocalStorage();
+            init();
+        }
+    }
+
+    function init() {
+        list.innerHTML = '';
+        transactions.forEach(addTransactionDOM);
         updateValues();
     }
 
-    // EXCEL EXPORT FUNCTION
-    function exportToExcel() {
-        if(transactions.length === 0) {
-            alert("No data to save!");
-            return;
-        }
-
-        // CSV Header
-        let csvContent = "data:text/csv;charset=utf-8,";
-        csvContent += "Date,Type,Category,Description,Amount\n";
-
-        // Add Data Rows
-        transactions.forEach(function(row) {
-            let rowData = `${row.date},${row.type},${row.category},${row.text},${Math.abs(row.amount)}`;
-            csvContent += rowData + "\n";
-        });
-
-        // Create Download Link
-        var encodedUri = encodeURI(csvContent);
-        var link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "my_budget_data.csv"); // Filename
-        document.body.appendChild(link);
-        
-        link.click(); // Trigger download
-        document.body.removeChild(link);
-    }
+    init();
 </script>
 
 </body>
-</html
+</html>
+
