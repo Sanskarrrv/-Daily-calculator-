@@ -11,6 +11,7 @@
             --primary-dark: #4338ca;
             --success: #10b981;
             --danger: #ef4444;
+            --excel: #1d6f42;
             --bg: #f3f4f6;
             --card: #ffffff;
             --text: #1f2937;
@@ -59,26 +60,43 @@
         .header {
             background: var(--primary);
             color: white;
-            padding: 25px;
+            padding: 20px;
             text-align: center;
             border-bottom-left-radius: 25px;
             border-bottom-right-radius: 25px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        .header h2 { margin: 0; font-weight: 600; }
+        /* Date Picker Styling */
+        .date-container {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        input[type="date"] {
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: none;
+            outline: none;
+            color: var(--text);
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
 
         .balance-card {
-            padding: 20px;
+            padding: 15px;
             text-align: center;
-            margin-top: 10px;
         }
 
         .balance-amount {
-            font-size: 2.8rem;
+            font-size: 2.5rem;
             font-weight: 800;
             color: var(--text);
-            margin-top: 5px;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
@@ -92,20 +110,16 @@
 
         .summary-box {
             flex: 1;
-            padding: 15px;
+            padding: 10px;
             border-radius: 15px;
             text-align: center;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            transition: transform 0.3s;
         }
-
-        .summary-box:hover { transform: translateY(-5px); }
         
         .income-box { background-color: #d1fae5; color: var(--success); border: 1px solid #a7f3d0; }
         .expense-box { background-color: #fee2e2; color: var(--danger); border: 1px solid #fecaca; }
 
-        .summary-box h4 { font-size: 0.9rem; text-transform: uppercase; opacity: 0.8; }
-        .summary-box p { font-size: 1.2rem; font-weight: bold; margin-top: 5px; }
+        .summary-box p { font-size: 1.1rem; font-weight: bold; margin-top: 5px; }
 
         .form-container {
             padding: 20px;
@@ -115,10 +129,11 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        input, select {
+        .input-group { margin-bottom: 10px; }
+        
+        input[type="text"], input[type="number"], select {
             width: 100%;
             padding: 12px 15px;
-            margin-bottom: 10px;
             border: 2px solid #e5e7eb;
             border-radius: 10px;
             font-size: 16px;
@@ -140,22 +155,26 @@
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 4px 6px rgba(79, 70, 229, 0.3);
+            margin-bottom: 8px;
         }
 
         button:active { transform: scale(0.98); }
-        button:hover { background-color: var(--primary-dark); transform: translateY(-2px); }
+        button:hover { filter: brightness(110%); transform: translateY(-2px); }
 
         .backup-section {
-            padding: 20px;
+            padding: 15px;
             text-align: center;
             margin-top: 10px;
+            background-color: #f8fafc;
+            border-top: 1px solid #e2e8f0;
         }
         
-        .btn-download { background-color: #0ea5e9; box-shadow: 0 4px 6px rgba(14, 165, 233, 0.3); margin-bottom: 8px; }
-        .btn-upload { background-color: #8b5cf6; box-shadow: 0 4px 6px rgba(139, 92, 246, 0.3); }
+        .btn-excel { background-color: var(--excel); }
+        .btn-download { background-color: #0ea5e9; }
+        .btn-upload { background-color: #8b5cf6; }
 
         .history { padding: 20px; }
-        .history h3 { margin-bottom: 15px; color: var(--text); border-bottom: 2px solid #e5e7eb; padding-bottom: 5px; }
+        .history h3 { margin-bottom: 10px; color: var(--text); border-bottom: 2px solid #e5e7eb; padding-bottom: 5px; font-size: 1rem; }
 
         .transaction-list { list-style: none; max-height: 250px; overflow-y: auto; padding-right: 5px; }
 
@@ -163,16 +182,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
+            padding: 12px;
             background: white;
             border-radius: 12px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            position: relative;
-            overflow: hidden;
             border-left: 6px solid transparent;
             animation: slideInRight 0.5s ease-out forwards;
-            transition: transform 0.2s;
         }
 
         @keyframes slideInRight {
@@ -180,49 +196,34 @@
             to { opacity: 1; transform: translateX(0); }
         }
 
-        .transaction-item:hover { transform: scale(1.02); }
-
         .transaction-item.income { border-left-color: var(--success); }
         .transaction-item.expense { border-left-color: var(--danger); }
 
         .delete-btn {
             background-color: var(--danger);
-            color: white;
-            border: none;
             width: 25px;
             height: 25px;
             border-radius: 50%;
-            cursor: pointer;
-            font-size: 12px;
-            line-height: 25px;
-            text-align: center;
-            opacity: 0.6;
-            transition: all 0.3s;
             padding: 0;
-            box-shadow: none;
             margin-left: 10px;
+            line-height: 25px;
+            margin-bottom: 0;
         }
-
-        .transaction-item:hover .delete-btn { opacity: 1; }
-        .delete-btn:hover { background-color: #dc2626; transform: rotate(90deg); }
-
-        /* Scrollbar Design */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #bbb; }
-
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h2>Shop Daily Tracker</h2>
+        <h2>Shop Tracker</h2>
+        <div class="date-container">
+            <label for="dateFilter">Date:</label>
+            <input type="date" id="dateFilter" onchange="init()">
+        </div>
     </div>
 
     <div class="balance-card">
-        <p style="color: #6b7280; font-weight: 500;">TOTAL BALANCE</p>
+        <p style="color: #6b7280; font-weight: 500;">Balance (Selected Date)</p>
         <div class="balance-amount" id="balance">₹0.00</div>
     </div>
 
@@ -238,37 +239,33 @@
     </div>
 
     <div class="form-container">
-        <h3 style="margin-bottom: 15px; color: #374151;">New Transaction</h3>
-        <div class="form-group">
-            <input type="text" id="text" placeholder="Enter Description..." required>
+        <div class="input-group">
+            <input type="text" id="text" placeholder="Description (e.g. Sales...)" required>
         </div>
-        <div class="form-group">
-            <input type="number" id="amount" placeholder="Enter Amount (₹)" required>
+        <div class="input-group">
+            <input type="number" id="amount" placeholder="Amount (₹)" required>
         </div>
-        <div class="form-group">
+        <div class="input-group">
             <select id="type">
                 <option value="income">Income (Credit +)</option>
                 <option value="expense">Expense (Debit -)</option>
             </select>
         </div>
-        <button onclick="addTransaction()">Add Transaction <i class="fas fa-plus-circle"></i></button>
+        <button onclick="addTransaction()">Add Entry for Selected Date <i class="fas fa-plus-circle"></i></button>
     </div>
 
     <div class="backup-section">
-        <p style="font-size: 13px; color: #6b7280; margin-bottom: 10px; font-weight: 500;">DATA SAFETY TOOLS</p>
-        <button class="btn-download" onclick="downloadData()">
-             Download Backup 📥
-        </button>
-        <button class="btn-upload" onclick="document.getElementById('fileInput').click()">
-             Restore Backup 📤
-        </button>
+        <button class="btn-excel" onclick="exportToExcel()">Download Report (All Dates) 📊</button>
+        <div style="display: flex; gap: 10px; margin-top: 5px;">
+            <button class="btn-download" onclick="downloadData()" style="flex: 1;">Backup 📥</button>
+            <button class="btn-upload" onclick="document.getElementById('fileInput').click()" style="flex: 1;">Restore 📤</button>
+        </div>
         <input type="file" id="fileInput" accept=".json" onchange="loadData(this)" style="display: none;">
     </div>
 
     <div class="history">
-        <h3>Recent History</h3>
+        <h3 id="history-title">Transactions</h3>
         <ul id="list" class="transaction-list"></ul>
-        <button onclick="clearData()" style="background-color: #6b7280; margin-top: 15px;">Reset All Data ⚠️</button>
     </div>
 </div>
 
@@ -280,6 +277,11 @@
     const text = document.getElementById('text');
     const amount = document.getElementById('amount');
     const type = document.getElementById('type');
+    const dateFilter = document.getElementById('dateFilter');
+    const historyTitle = document.getElementById('history-title');
+
+    // Set Date Input to Today by default
+    dateFilter.valueAsDate = new Date();
 
     let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 
@@ -289,17 +291,19 @@
             return;
         }
 
+        const selectedDate = dateFilter.value; // Get the date from the picker
+
         const transaction = {
             id: generateID(),
             text: text.value,
             amount: type.value === 'expense' ? -Math.abs(+amount.value) : Math.abs(+amount.value),
-            date: new Date().toLocaleDateString()
+            date: selectedDate, // Store with selected date (YYYY-MM-DD)
+            type: type.value
         };
 
         transactions.push(transaction);
         updateLocalStorage();
-        addTransactionDOM(transaction);
-        updateValues();
+        init(); // Refresh UI
 
         text.value = '';
         amount.value = '';
@@ -307,6 +311,19 @@
 
     function generateID() {
         return Math.floor(Math.random() * 100000000);
+    }
+
+    // Function to show only transactions for the SELECTED DATE
+    function init() {
+        list.innerHTML = '';
+        const selectedDate = dateFilter.value;
+        historyTitle.innerText = `Transactions for: ${selectedDate}`;
+
+        // Filter: Only take transactions that match the date picker
+        const dailyTransactions = transactions.filter(t => t.date === selectedDate);
+
+        dailyTransactions.forEach(addTransactionDOM);
+        updateValues(dailyTransactions);
     }
 
     function addTransactionDOM(transaction) {
@@ -318,20 +335,20 @@
 
         item.innerHTML = `
             <div>
-                <strong style="font-size: 1.1rem;">${transaction.text}</strong> <br>
-                <small style="color: #6b7280; font-size: 0.85rem;"><i class="fas fa-calendar-alt"></i> ${transaction.date || ''}</small>
+                <strong>${transaction.text}</strong>
             </div>
             <div style="display: flex; align-items: center;">
-                <span style="font-weight: bold; font-size: 1.1rem; margin-right: 10px;">${sign}₹${Math.abs(transaction.amount)}</span>
+                <span style="font-weight: bold; margin-right: 10px;">${sign}₹${Math.abs(transaction.amount)}</span>
                 <button class="delete-btn" onclick="removeTransaction(${transaction.id})">✕</button>
             </div>
         `;
 
-        list.prepend(item); // Adds new item to the TOP instead of bottom
+        list.prepend(item);
     }
 
-    function updateValues() {
-        const amounts = transactions.map(transaction => transaction.amount);
+    // Update totals based on the FILTERED (Daily) list
+    function updateValues(dailyData) {
+        const amounts = dailyData.map(transaction => transaction.amount);
         const total = amounts.reduce((acc, item) => (acc += item), 0).toFixed(2);
         const income = amounts.filter(item => item > 0).reduce((acc, item) => (acc += item), 0).toFixed(2);
         const expense = (amounts.filter(item => item < 0).reduce((acc, item) => (acc += item), 0) * -1).toFixed(2);
@@ -342,7 +359,7 @@
     }
 
     function removeTransaction(id) {
-        if(confirm("Delete this transaction?")) {
+        if(confirm("Delete this entry?")) {
             transactions = transactions.filter(transaction => transaction.id !== id);
             updateLocalStorage();
             init();
@@ -353,64 +370,69 @@
         localStorage.setItem('transactions', JSON.stringify(transactions));
     }
 
-    // --- Backup Functions ---
-
-    function downloadData() {
+    // --- Excel Export (Exports ALL data, not just daily) ---
+    function exportToExcel() {
         if(transactions.length === 0) {
-            alert("No data to backup!");
+            alert("No data to export!");
             return;
         }
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += "Date,Description,Type,Amount (INR)\n";
+        
+        // Sort by date before exporting
+        const sortedTrans = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        sortedTrans.forEach(function(row) {
+            let type = row.amount < 0 ? "Expense" : "Income";
+            let amount = Math.abs(row.amount);
+            let rowString = `${row.date},${row.text.replace(/,/g, " ")},${type},${amount}`;
+            csvContent += rowString + "\n";
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "full_shop_report.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // --- Backup Functions ---
+    function downloadData() {
+        if(transactions.length === 0) { alert("No data!"); return; }
         const dataStr = JSON.stringify(transactions);
         const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-        const exportFileDefaultName = 'shop_tracker_backup.json';
-        
         const linkElement = document.createElement('a');
         linkElement.setAttribute('href', dataUri);
-        linkElement.setAttribute('download', exportFileDefaultName);
+        linkElement.setAttribute('download', 'backup.json');
         linkElement.click();
     }
 
     function loadData(input) {
         const file = input.files[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onload = function(e) {
             try {
-                const loadedTransactions = JSON.parse(e.target.result);
-                if(Array.isArray(loadedTransactions)) {
-                    if(confirm("Restoring will overwrite current data. Continue?")) {
-                        transactions = loadedTransactions;
+                const loaded = JSON.parse(e.target.result);
+                if(Array.isArray(loaded)) {
+                    if(confirm("Restore backup? Current data will be replaced.")) {
+                        transactions = loaded;
                         updateLocalStorage();
                         init();
-                        alert("Backup restored successfully!");
+                        alert("Restored!");
                     }
-                } else {
-                    alert("Invalid file format!");
                 }
-            } catch(err) {
-                alert("Error reading file.");
-            }
+            } catch(err) { alert("Error reading file."); }
         };
         reader.readAsText(file);
         input.value = '';
     }
 
-    function clearData() {
-        if(confirm("Delete ALL data permanently?")) {
-            transactions = [];
-            updateLocalStorage();
-            init();
-        }
-    }
-
-    function init() {
-        list.innerHTML = '';
-        transactions.forEach(addTransactionDOM);
-        updateValues();
-    }
-
+    // Initialize logic
     init();
+
 </script>
 
 </body>
